@@ -1,6 +1,6 @@
 namespace MyHttpServer.MyHttp;
 
-public static class HtmlTemplate
+public static class MyPageHtmlTemplate
 {
     public static string HtmlResponse(string title, string? body)
     {
@@ -60,14 +60,14 @@ public static class HtmlTemplate
 
     private static string GetHeader()
     {
-        return $$"""
-                 <div>
-                     <h1><a href="/" title="Home">My HTTP Header</a></h1>
-                 </div>
-                 <nav>
-                     ${{GetNavigationBar()}}
-                 </nav>
-                 """;
+        return $"""
+                <div>
+                    <h1><a href="/" title="Home">My HTTP Header</a></h1>
+                </div>
+                <nav>
+                    {GetNavigationBar()}
+                </nav>
+                """;
     }
 
     private static string GetFooter()
@@ -83,13 +83,13 @@ public static class HtmlTemplate
     {
         return """
                <div>
-                   <a href="/login">
-                   <button>Log In</button>
-               </a>
-               <a href="/register">
-               <button>Register</button>
-                   </a>
-                   </div>
+                    <a href="/login">
+                        <button>Log In</button>
+                    </a>
+                    <a href="/register">
+                        <button>Register</button>
+                    </a>
+               </div>
                """;
     }
 }
