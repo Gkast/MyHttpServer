@@ -1,25 +1,18 @@
 using System.Net;
 using MyHttpServer.HttpHandlers;
+using MyHttpServer.MyHttp.Handler;
 
 namespace MyHttpServer.MyHttp;
 
 public sealed class MyHttpServer
 {
     private static readonly HttpListener HttpListener;
-
-    private static readonly Dictionary<string, Dictionary<string, IMyHttpHandler>> routes;
-    // private static readonly MyHttpRouter MyHttpRouter;
+    private static readonly MyHttpRouter Router;
 
     static MyHttpServer()
     {
         HttpListener = new HttpListener();
-        // MyHttpRouter = new MyHttpRouter();
-        routes = new Dictionary<string, Dictionary<string, IMyHttpHandler>>
-        {
-            { "/", new Dictionary<string, IMyHttpHandler> { { "GET", new Home() } } },
-            { "/home", new Dictionary<string, IMyHttpHandler> { { "GET", new Home() } } },
-            { "/about", new Dictionary<string, IMyHttpHandler> { { "GET", new About() } } }
-        };
+        Router = new MyHttpRouter();
     }
 
     public MyHttpServer(string host = "localhost", int port = 7474)
@@ -34,8 +27,19 @@ public sealed class MyHttpServer
         while (HttpListener.IsListening)
         {
             var context = await HttpListener.GetContextAsync().ConfigureAwait(false);
-            _ = MyHttpRequestHandler.HandleContext(context, routes).ConfigureAwait(false);
+            _ = MyHttpRequestHandler.HandleContext(context, Router).ConfigureAwait(false);
         }
+    }
+
+    public void InitRoutes()
+    {
+        Router.Get("/", new Home("vfdvf"));
+        Router.Post("/home", new Home("jsdncsdunvisudiv"));
+        Router.Get("/about", new About());
+        Router.Get("/assets/public/css/main.css", new StaticFileHandler());
+        Router.Get("/assets/public/js/main.js", new StaticFileHandler());
+        Router.Get("/robots.txt", new StaticFileHandler("robots.txt"));
+        Router.Get("/sitemap.xml", new StaticFileHandler("sitemap.xml"));
     }
 
     public void Terminate()

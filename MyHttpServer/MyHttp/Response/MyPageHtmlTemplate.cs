@@ -1,4 +1,4 @@
-namespace MyHttpServer.MyHttp;
+namespace MyHttpServer.MyHttp.Response;
 
 public static class MyPageHtmlTemplate
 {

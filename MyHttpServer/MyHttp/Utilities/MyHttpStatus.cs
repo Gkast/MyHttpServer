@@ -1,4 +1,4 @@
-namespace MyHttpServer.MyHttp;
+namespace MyHttpServer.MyHttp.Utilities;
 
 public enum MyHttpStatus
 {

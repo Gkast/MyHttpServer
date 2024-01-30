@@ -4,17 +4,18 @@ namespace MyHttpServer;
 
 internal static class Program
 {
-    public static async Task Main(string[] args)
+    public static async Task Main()
     {
-        var httpServer = new MyHttp.MyHttpServer();
         try
         {
+            var httpServer = new MyHttp.MyHttpServer();
+            httpServer.InitRoutes();
             await httpServer.Listen();
         }
         catch (Exception e)
         {
             Logger.LogFatal("Error starting up Program", e.Message, e.StackTrace ?? "");
-            httpServer.Terminate();
+            Environment.Exit(1);
         }
     }
 }
