@@ -1,13 +1,13 @@
 using MyHttpServer.MyHttp.Handler;
-using MyHttpServer.MyHttp.Router;
 
-namespace MyHttpServer.MyHttp;
+namespace MyHttpServer.MyHttp.Router;
 
 public sealed class MyHttpRouter
 {
     private readonly RadixTrieHttpRouter _router = new();
 
-    public (IMyHttpHandler? handler, RouteStatus status) Find(string httpMethod, string path)
+    public (IMyHttpHandler? handler, RouteStatus status) Find(string httpMethod,
+        string path)
     {
         return _router.FindRoute(httpMethod.ToUpper(), path.Trim());
     }

@@ -12,6 +12,7 @@ public class RadixTrieHttpRouter
     }
 
     // Modified FindRouteRecursive to return a tuple indicating the handler and the status
+    // Modified FindRouteRecursive to return a tuple indicating the handler and the status
     public (IMyHttpHandler? handler, RouteStatus status) FindRoute(string httpMethod, string path)
     {
         return FindRouteRecursive(_root, httpMethod, path.Split('/'));
@@ -44,7 +45,6 @@ public class RadixTrieHttpRouter
         }
     }
 
-    // Modified FindRouteRecursive to return a tuple indicating the handler and the status
     private static (IMyHttpHandler? handler, RouteStatus status) FindRouteRecursive(RadixTrieNode node,
         string httpMethod, IReadOnlyList<string> pathParts)
     {
@@ -66,7 +66,7 @@ public class RadixTrieHttpRouter
             }
 
             // Valid path but no handlers for any HTTP method
-            // return (null, RouteStatus.NoHandlers);
+            return (null, RouteStatus.NoHandlers);
         }
 
         var currentPart = pathParts[0];

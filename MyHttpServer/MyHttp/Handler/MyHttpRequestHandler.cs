@@ -16,9 +16,14 @@ public static class MyHttpRequestHandler
         try
         {
             var (myHandler, status) = router.Find(request.HttpMethod, request.Url.AbsolutePath);
+            // foreach (var variable in variables)
+            // {
+            //     Console.WriteLine($"Variable {variable.Key}: {variable.Value}");
+            // }
+            Console.WriteLine("route status " + status);
             switch (status)
             {
-                case RouteStatus.InvalidPath:
+                case RouteStatus.InvalidPath or RouteStatus.NoHandlers:
                     await SendNativeResponse(
                         404,
                         "Not Found",
@@ -38,6 +43,8 @@ public static class MyHttpRequestHandler
                     var myRes = await myHandler!.ResponseFunc(request);
                     await SendMyHttpResponse(myRes, response).ConfigureAwait(false);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
         catch (Exception e)
@@ -52,7 +59,7 @@ public static class MyHttpRequestHandler
         }
     }
 
-    private static async Task SendMyHttpResponse(MyHttpResponse myRes, HttpListenerResponse res)
+    private static async Task SendMyHttpResponse(IMyHttpResponse myRes, HttpListenerResponse res)
     {
         res.StatusCode = myRes.StatusCode;
         res.StatusDescription = myRes.StatusMessage;
@@ -74,10 +81,7 @@ public static class MyHttpRequestHandler
             }
 
             if (myRes.Body is Func<HttpListenerResponse, Task> bodyFunc)
-            {
-                Console.WriteLine("body func");
                 await bodyFunc(res);
-            }
         }
     }
 
@@ -97,7 +101,7 @@ public static class MyHttpRequestHandler
         response.ContentLength64 = body.Length;
 
         await response.OutputStream.WriteAsync(new ReadOnlyMemory<byte>(body)).ConfigureAwait(false);
-        
+
         response.Close();
     }
 }

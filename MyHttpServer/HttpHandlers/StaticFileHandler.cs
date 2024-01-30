@@ -1,5 +1,4 @@
 using System.Net;
-using System.Net.Http.Headers;
 using MyHttpServer.MyHttp.Handler;
 using MyHttpServer.MyHttp.Response;
 using MyHttpServer.MyHttp.Utilities;
@@ -23,35 +22,11 @@ public class StaticFileHandler(string? forcedUrl = null) : IMyHttpHandler
         if (!file.Exists || ext == null) return MyHttpResponseTemplate.NotFound();
 
         var forceDownload = req.Url.Query.Contains("download=1");
-        var contentType = MyMimeTypes.GetMimeType(ext) ?? MyMimeTypes.GetMimeType("bin");
+        var contentType = MyMimeTypes.GetMimeType(ext);
 
         try
         {
-            var headers = new Dictionary<object, string>
-            {
-                { HttpResponseHeader.ContentType, contentType },
-                { HttpResponseHeader.ContentLength, file.Length.ToString() },
-                {
-                    "Content-Disposition",
-                    $"{(forceDownload ? "attachment" : "inline")}; filename=\"{file.Name}\""
-                }
-            };
-
-            return new MyHttpResponse(MyHttpStatus.Ok, headers,
-                async res =>
-                {
-                    Console.WriteLine("Entered CopyToAsync block...");
-                    await using (var fileStream = new FileStream(requestedFilePath, FileMode.Open, FileAccess.Read,
-                                     FileShare.Read, 4096, FileOptions.Asynchronous))
-                    {
-                        fileStream.Seek(0, SeekOrigin.Begin);
-                        await fileStream.CopyToAsync(res.OutputStream);
-                        await res.OutputStream.FlushAsync();
-                        res.OutputStream.Close();
-                    }
-
-                    Console.WriteLine("Exited CopyToAsync block...");
-                });
+            return SendFileStream(contentType, file, forceDownload, requestedFilePath);
         }
         catch (Exception e)
         {
@@ -71,7 +46,8 @@ public class StaticFileHandler(string? forcedUrl = null) : IMyHttpHandler
         return Path.GetFullPath(Path.Combine(baseDirectory, "../../../..", assetPath));
     }
 
-    private static Task<IMyHttpHandler> SendFileStream()
+    private static MyHttpResponse SendFileStream(string contentType, FileInfo file, bool forceDownload,
+        string requestedFilePath)
     {
         var headers = new Dictionary<object, string>
         {
@@ -86,17 +62,12 @@ public class StaticFileHandler(string? forcedUrl = null) : IMyHttpHandler
         return new MyHttpResponse(MyHttpStatus.Ok, headers,
             async res =>
             {
-                Console.WriteLine("Entered CopyToAsync block...");
-                await using (var fileStream = new FileStream(requestedFilePath, FileMode.Open, FileAccess.Read,
-                                 FileShare.Read, 4096, FileOptions.Asynchronous))
-                {
-                    fileStream.Seek(0, SeekOrigin.Begin);
-                    await fileStream.CopyToAsync(res.OutputStream);
-                    await res.OutputStream.FlushAsync();
-                    res.OutputStream.Close();
-                }
-
-                Console.WriteLine("Exited CopyToAsync block...");
+                await using var fileStream = new FileStream(requestedFilePath, FileMode.Open, FileAccess.Read,
+                    FileShare.Read, 4096, FileOptions.Asynchronous);
+                fileStream.Seek(0, SeekOrigin.Begin);
+                await fileStream.CopyToAsync(res.OutputStream);
+                await res.OutputStream.FlushAsync();
+                res.OutputStream.Close();
             });
     }
 }

@@ -1,6 +1,7 @@
 using System.Net;
 using MyHttpServer.HttpHandlers;
 using MyHttpServer.MyHttp.Handler;
+using MyHttpServer.MyHttp.Router;
 
 namespace MyHttpServer.MyHttp;
 
@@ -34,9 +35,10 @@ public sealed class MyHttpServer
     public void InitRoutes()
     {
         Router.Get("/", new Home("vfdvf"));
+        Router.Get("/test/:testy", new Home("bfdbdfbfdbf"));
         Router.Post("/home", new Home("jsdncsdunvisudiv"));
         Router.Get("/about", new About());
-        Router.Get("/assets/public/css/main.css", new StaticFileHandler());
+        Router.Get("/assets/public/*", new StaticFileHandler());
         Router.Get("/assets/public/js/main.js", new StaticFileHandler());
         Router.Get("/robots.txt", new StaticFileHandler("robots.txt"));
         Router.Get("/sitemap.xml", new StaticFileHandler("sitemap.xml"));

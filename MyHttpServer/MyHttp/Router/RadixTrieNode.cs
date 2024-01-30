@@ -4,8 +4,8 @@ namespace MyHttpServer.MyHttp.Router;
 
 internal class RadixTrieNode
 {
-    private Dictionary<string, RadixTrieNode> Children { get; } = new Dictionary<string, RadixTrieNode>();
-    public Dictionary<string, IMyHttpHandler?> Handlers { get; } = new Dictionary<string, IMyHttpHandler?>();
+    private Dictionary<string, RadixTrieNode> Children { get; } = new();
+    public Dictionary<string, IMyHttpHandler?> Handlers { get; } = new();
 
     public void AddChild(string key, RadixTrieNode child)
     {
