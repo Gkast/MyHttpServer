@@ -39,7 +39,7 @@ public sealed class MyHttpServer
         Router.Post("/home", new Home("jsdncsdunvisudiv"));
         Router.Get("/about", new About());
         Router.Get("/assets/public/*", new StaticFileHandler());
-        Router.Get("/assets/public/js/main.js", new StaticFileHandler());
+        // Router.Get("/assets/public/js/main.js", new StaticFileHandler());
         Router.Get("/robots.txt", new StaticFileHandler("robots.txt"));
         Router.Get("/sitemap.xml", new StaticFileHandler("sitemap.xml"));
     }

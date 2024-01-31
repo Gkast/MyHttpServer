@@ -8,34 +8,34 @@ namespace MyHttpServer.HttpHandlers;
 
 public class StaticFileHandler(string? forcedUrl = null) : IMyHttpHandler
 {
-    public Func<HttpListenerRequest, Task<MyHttpResponse>> ResponseFunc { get; } = async req =>
+    public Func<HttpListenerRequest, Task<MyHttpResponse>> ResponseFunc { get; } = req =>
     {
         var decodedPath = Uri.UnescapeDataString(req.Url.AbsolutePath).TrimStart('/');
         var requestedFilePath = GetFilePath(forcedUrl, decodedPath);
         var dirExists = Directory.Exists(Path.GetDirectoryName(requestedFilePath));
 
-        if (!dirExists) return MyHttpResponseTemplate.NotFound();
+        if (!dirExists) return Task.FromResult(MyHttpResponseTemplate.NotFound());
 
         var file = new FileInfo(requestedFilePath);
         var ext = decodedPath.Split('.').LastOrDefault();
 
-        if (!file.Exists || ext == null) return MyHttpResponseTemplate.NotFound();
+        if (!file.Exists || ext == null) return Task.FromResult(MyHttpResponseTemplate.NotFound());
 
         var forceDownload = req.Url.Query.Contains("download=1");
         var contentType = MyMimeTypes.GetMimeType(ext);
 
         try
         {
-            return SendFileStream(contentType, file, forceDownload, requestedFilePath);
+            return Task.FromResult(SendFileStream(contentType, file, forceDownload, requestedFilePath));
         }
         catch (Exception e)
         {
             Logger.LogError("Error reading file:", e.Message, e.StackTrace ?? "");
-            return new MyHttpResponse(
+            return Task.FromResult(new MyHttpResponse(
                 MyHttpStatus.InternalServerError,
                 new Dictionary<object, string> { { "content-type", MyMimeTypes.GetMimeType("pl") } },
                 "Internal Server Error"
-            );
+            ));
         }
     };
 
