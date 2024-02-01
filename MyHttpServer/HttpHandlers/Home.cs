@@ -1,15 +1,15 @@
 using System.Net;
-using MyHttpServer.MyHttp;
 using MyHttpServer.MyHttp.Handler;
 using MyHttpServer.MyHttp.Response;
 
 namespace MyHttpServer.HttpHandlers;
 
-public class Home(string pe) : IMyHttpHandler
+public sealed class Home : IMyHttpHandler
 {
-    public Func<HttpListenerRequest, Task<MyHttpResponse>> ResponseFunc { get; } = request =>
-    {
-        var htmlBody = "<p>Home Page</p>" + pe;
-        return Task.FromResult(MyHttpResponseTemplate.Ok("Home", htmlBody));
-    };
+    public Func<HttpListenerRequest, Dictionary<string, string>?, Task<MyHttpResponse>> ResponseFunc { get; } =
+        (request, pathVars) =>
+        {
+            const string htmlBody = "<p>Home Page</p>";
+            return Task.FromResult(MyHttpResponseTemplate.Ok("Home", htmlBody));
+        };
 }

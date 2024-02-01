@@ -1,6 +1,6 @@
 namespace MyHttpServer.MyHttp.Router;
 
-public enum RouteStatus
+public enum MyRouteStatus
 {
     Valid,
     InvalidPath,

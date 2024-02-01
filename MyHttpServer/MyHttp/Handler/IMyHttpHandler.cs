@@ -5,5 +5,5 @@ namespace MyHttpServer.MyHttp.Handler;
 
 public interface IMyHttpHandler
 {
-    Func<HttpListenerRequest, Task<MyHttpResponse>> ResponseFunc { get; }
+    Func<HttpListenerRequest, Dictionary<string, string>?, Task<MyHttpResponse>> ResponseFunc { get; }
 }

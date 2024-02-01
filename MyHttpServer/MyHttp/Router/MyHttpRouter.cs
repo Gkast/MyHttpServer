@@ -6,7 +6,8 @@ public sealed class MyHttpRouter
 {
     private readonly RadixTrieHttpRouter _router = new();
 
-    public (IMyHttpHandler? handler, RouteStatus status) Find(string httpMethod,
+    public (IMyHttpHandler? handler, MyRouteStatus status, Dictionary<string, string>? pathVariables) Find(
+        string httpMethod,
         string path)
     {
         return _router.FindRoute(httpMethod.ToUpper(), path.Trim());

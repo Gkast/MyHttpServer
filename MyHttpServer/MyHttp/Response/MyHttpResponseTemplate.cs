@@ -13,7 +13,6 @@ public static class MyHttpResponseTemplate
             { HttpResponseHeader.ContentType, MyMimeTypes.GetMimeType("html") }
         };
         var htmlBody = MyPageHtmlTemplate.HtmlResponse(title, body);
-
         return new MyHttpResponse(statusCode, headers, htmlBody);
     }
 
@@ -46,7 +45,6 @@ public static class MyHttpResponseTemplate
             { HttpResponseHeader.ContentType, MyMimeTypes.GetMimeType("html") }
         };
         var htmlBody = MyPageHtmlTemplate.HtmlResponse(title, body);
-
         return new MyHttpResponse(statusCode, headers, htmlBody);
     }
 }

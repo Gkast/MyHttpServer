@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+
 namespace MyHttpServer.MyHttp.Response;
 
 public static class MyPageHtmlTemplate
